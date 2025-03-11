@@ -1,6 +1,7 @@
 import {useState} from "react";
-import {useAppDispatch} from "../../app/hooks.ts";
+import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {changePassword} from "../../features/api/accauntApi.ts";
+import {deleteToken} from "../../features/slices/tokenSlice.ts";
 
 interface Props {
     close: () => void;
@@ -11,15 +12,46 @@ const ChangePassword = ({close}: Props) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const dispatch = useAppDispatch();
+    const token = useAppSelector(state => state.token);
+
+
+    const decodeToken = (token: string) => {
+        try {
+            const decoded = atob(token.split(" ")[1]);
+            const [, password] = decoded.split(":");
+            return password;
+        } catch {
+            return null;
+        }
+    };
 
     const handleClickSave = () => {
-        if (confirmPassword === newPassword) {
-            dispatch(changePassword(newPassword));
-        } else {
-            alert('New password and confirm new password are different');
+        const storedPassword = decodeToken(token);
+        if (!storedPassword || storedPassword !== oldPassword) {
+            alert("Incorrect old password! Logging out...");
+            dispatch(deleteToken());
+            close();
+            return;
         }
+
+        if (newPassword !== confirmPassword) {
+            alert('New password and confirm new password are different');
+            return;
+        }
+
+        dispatch(changePassword(newPassword));
         close();
-    }
+    };
+
+
+    // const handleClickSave = () => {
+    //     if (confirmPassword === newPassword) {
+    //         dispatch(changePassword(newPassword));
+    //     } else {
+    //         alert('New password and confirm new password are different');
+    //     }
+    //     close();
+    // }
 
     const handleClickClear = () => {
         setNewPassword('');

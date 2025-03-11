@@ -5,15 +5,7 @@ import Profile from "./components/Profile";
 import {useAppSelector} from "./app/hooks.ts";
 
 function App() {
-    // const navigate = useNavigate();
     const token = useAppSelector(state => state.token);
-    // useEffect(() => {
-    //     if (token) {
-    //         navigate('/profile');
-    //     } else {
-    //         navigate('/');
-    //     }
-    // }, [token, navigate]);
 
     return (
         <Routes>
