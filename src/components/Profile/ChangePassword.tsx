@@ -43,16 +43,6 @@ const ChangePassword = ({close}: Props) => {
         close();
     };
 
-
-    // const handleClickSave = () => {
-    //     if (confirmPassword === newPassword) {
-    //         dispatch(changePassword(newPassword));
-    //     } else {
-    //         alert('New password and confirm new password are different');
-    //     }
-    //     close();
-    // }
-
     const handleClickClear = () => {
         setNewPassword('');
         setConfirmPassword('');
