@@ -5,6 +5,7 @@ import {RootState} from "../../app/store.ts";
 
 export const accountApi = createApi({
     reducerPath: "account",
+    tagTypes: ['profile'],
     baseQuery: fetchBaseQuery({
         baseUrl: base_url,
         prepareHeaders: (headers, {getState, endpoint}) => {
@@ -30,14 +31,16 @@ export const accountApi = createApi({
                 headers: {
                     Authorization: token
                 }
-            })
+            }),
+            providesTags: ['profile']
         }),
         updateUser: builder.mutation<UserProfile, UserData>({
             query: (user) => ({
                 url: '/user',
                 method: 'PUT',
                 body: user
-            })
+            }),
+            invalidatesTags: ['profile']
         }),
         changePassword: builder.mutation<void, { newPassword: string, token: string }>({
             query: ({newPassword, token}) => ({
@@ -47,9 +50,16 @@ export const accountApi = createApi({
                     'X-Password': newPassword,
                     Authorization: token
                 }
-            })
+            }),
+            invalidatesTags: ['profile']
         })
     })
 })
 
-export const {useChangePasswordMutation, useFetchUserQuery, useUpdateUserMutation, useRegisterUserMutation} = accountApi
+export const {
+    useChangePasswordMutation,
+    useFetchUserQuery,
+    useLazyFetchUserQuery,
+    useUpdateUserMutation,
+    useRegisterUserMutation
+} = accountApi

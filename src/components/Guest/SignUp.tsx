@@ -1,16 +1,23 @@
 import {useState} from "react";
+import {useRegisterUserMutation} from "../../features/api/accauntApi.ts";
 import {useAppDispatch} from "../../app/hooks.ts";
-import {registerUser} from "../../features/api/accauntApi.ts";
+import {createToken} from "../../utils/constants.ts";
+import {setToken} from "../../features/slices/tokenSlice.ts";
 
 const SignUp = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [registerUser, {isSuccess}] = useRegisterUserMutation()
     const dispatch = useAppDispatch();
 
+    if (isSuccess) {
+        dispatch(setToken(createToken(login, password)));
+    }
+
     const handleClickSignUp = () => {
-        dispatch(registerUser({login, password, firstName, lastName}));
+        registerUser({login, password, firstName, lastName});
     }
 
     const handleClickClear = () => {
